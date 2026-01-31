@@ -73,6 +73,29 @@ public class FilterParamsFactory {
                 cp.setAlpha(Double.parseDouble(params.getOrDefault("alpha", "1.0")));
                 yield cp;
             }
+            case CHROMATIC_ABERRATION -> {
+                ChromaticAberrationParams cap = new ChromaticAberrationParams();
+                cap.setBlueStrength(Double.parseDouble(params.getOrDefault("blueStrength", "1.0")));
+                cap.setRedStrength(Double.parseDouble(params.getOrDefault("redStrength", "1.0")));
+                cap.setGreenStrength(Double.parseDouble(params.getOrDefault("greenStrength", "1.0")));
+                cap.setRadialStrength(Double.parseDouble(params.getOrDefault("radialStrength", "5.0")));
+                yield cap;
+            }
+            case DATA_MOSH -> {
+                DataMoshParams dmp = new DataMoshParams();
+                dmp.setBlockSize(Integer.parseInt(params.getOrDefault("blockSize", "10")));
+                dmp.setMaxOffset(Integer.parseInt(params.getOrDefault("maxOffset", "10")));
+                dmp.setChaos(Double.parseDouble(params.getOrDefault("chaos", "0.3")));
+                dmp.setSmear(Double.parseDouble(params.getOrDefault("smear", "0.7")));
+                yield dmp;
+            }
+            case ASCII_ART -> {
+                AsciiArtParams aap = new AsciiArtParams();
+                aap.setBlockSize(Integer.parseInt(params.getOrDefault("blockSize", "10")));
+                aap.setGradient(params.getOrDefault("gradient", " .:-=+*#%@"));
+                aap.setInvert(Boolean.parseBoolean(params.getOrDefault("invert", "false")));
+                yield aap;
+            }
             case GRAYSCALE, NEGATIVE -> new EmptyParams();
 
         };

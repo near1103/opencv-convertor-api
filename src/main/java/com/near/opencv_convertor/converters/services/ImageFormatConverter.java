@@ -1,5 +1,6 @@
-package com.near.opencv_convertor.converters;
+package com.near.opencv_convertor.converters.services;
 
+import com.near.opencv_convertor.converters.enums.SupportedImageFormat;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;

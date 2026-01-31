@@ -12,5 +12,8 @@ public enum FilterType {
     BRIGHTNESS,
     BLUR,
     GAUSSIAN_BLUR,
-    CONTRAST
+    CONTRAST,
+    CHROMATIC_ABERRATION,
+    DATA_MOSH,
+    ASCII_ART
 }

@@ -1,4 +1,4 @@
-package com.near.opencv_convertor.converters;
+package com.near.opencv_convertor.converters.services;
 
 import org.springframework.stereotype.Service;
 
@@ -59,5 +59,24 @@ public class ImageProcessor {
         }
 
         return abgrImage;
+    }
+
+    public BufferedImage removeAlphaChannel(BufferedImage src, Color backgroundColor) {
+        if (!src.getColorModel().hasAlpha()) {
+            return src;
+        }
+
+        int width = src.getWidth();
+        int height = src.getHeight();
+        BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+        Graphics2D g = newImage.createGraphics();
+        g.setComposite(AlphaComposite.SrcOver);
+        g.setColor(backgroundColor);
+        g.fillRect(0, 0, width, height);
+        g.drawImage(src, 0, 0, null);
+        g.dispose();
+
+        return newImage;
     }
 }

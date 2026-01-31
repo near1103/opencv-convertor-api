@@ -10,8 +10,8 @@ import org.opencv.imgproc.Imgproc;
 public class BlurFilter implements ImageFilter {
     @Override
     public Mat apply(Mat input, FilterParams params) {
-        BlurParams blurParams = (BlurParams) params;
-        int kSize = blurParams.getKernelSize();
+        BlurParams p = (BlurParams) params;
+        int kSize = p.getKernelSize();
 
         if (kSize < 1) kSize = 1;
         if (kSize % 2 == 0) kSize += 1;

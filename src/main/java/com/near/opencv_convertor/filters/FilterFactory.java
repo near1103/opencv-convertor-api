@@ -20,6 +20,9 @@ public class FilterFactory {
             case BLUR -> new BlurFilter();
             case GAUSSIAN_BLUR ->  new GaussianBlurFilter();
             case CONTRAST -> new ContrastFilter();
+            case CHROMATIC_ABERRATION -> new ChromaticAberrationFilter();
+            case DATA_MOSH -> new DataMoshFilter();
+            case ASCII_ART -> new AsciiArtFilter();
         };
     }
 }

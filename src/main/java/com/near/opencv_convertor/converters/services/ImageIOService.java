@@ -1,4 +1,4 @@
-package com.near.opencv_convertor.converters;
+package com.near.opencv_convertor.converters.services;
 
 import org.springframework.stereotype.Service;
 

@@ -1,18 +1,17 @@
-package com.near.opencv_convertor.converters;
+package com.near.opencv_convertor.converters.enums;
 
 import lombok.Getter;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Getter
 public enum SupportedImageFormat {
     JPG("jpg", MediaType.IMAGE_JPEG),
     JPEG("jpeg", MediaType.IMAGE_JPEG),
     PNG("png", MediaType.IMAGE_PNG),
+    GIF("gif", MediaType.IMAGE_PNG),
     BMP("bmp", MediaType.valueOf("image/bmp")),
     TIF("tif", MediaType.valueOf("image/tiff")),
     TIFF("tiff", MediaType.valueOf("image/tiff")),
@@ -29,23 +28,21 @@ public enum SupportedImageFormat {
         this.mediaType = mediaType;
     }
 
+    public boolean supportsAlpha() {
+        return switch (this) {
+            case PNG, WEBP, ICO, TIFF, TIF -> true;
+            default -> false;
+        };
+    }
+
     public static Optional<SupportedImageFormat> fromExtension(String ext) {
         return Arrays.stream(values())
                 .filter(f -> f.extension.equalsIgnoreCase(ext))
                 .findFirst();
     }
 
-    //may be useful for frontend
     public static boolean isSupported(String ext) {
-        return fromExtension(ext).isPresent();
-    }
-
-    //may be useful for frontend
-    public static Set<String> getAllExtensions() {
         return Arrays.stream(values())
-                .map(SupportedImageFormat::getExtension)
-                .collect(Collectors.toSet());
+                .anyMatch(f -> f.getExtension().equalsIgnoreCase(ext));
     }
 }
-
-

@@ -8,8 +8,8 @@ import org.opencv.core.Mat;
 public class BrightnessFilter implements ImageFilter {
     @Override
     public Mat apply(Mat input, FilterParams params) {
-        BrightnessParams bp = (BrightnessParams) params;
-        int brightness = bp.getBrightness();
+        BrightnessParams p = (BrightnessParams) params;
+        int brightness = p.getBrightness();
 
         Mat result = new Mat();
         input.convertTo(result, -1, 1, brightness);
