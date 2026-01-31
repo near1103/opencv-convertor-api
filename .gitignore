@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+uploads
+/src/main/java/com/near/opencv_convertor/something_that_will_be_deleted/
+/results/
