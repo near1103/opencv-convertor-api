@@ -52,20 +52,38 @@ public class AppJwtFilter extends OncePerRequestFilter {
 
         try {
             Claims claims = jwtService.validateToken(token);
+
             String uid = claims.getSubject();
             String email = claims.get("email", String.class);
 
             FirebaseUserPrincipal principal = new FirebaseUserPrincipal(uid, email);
 
             Authentication auth = new UsernamePasswordAuthenticationToken(
-                    principal, null, List.of()
+                    principal,
+                    null,
+                    List.of()
             );
 
             SecurityContextHolder.getContext().setAuthentication(auth);
-            chain.doFilter(request, response);
+
+        } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
+            SecurityContextHolder.clearContext();
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"error\":\"INVALID_TOKEN\",\"message\":\"" +
+                    safe(e.getMessage()) + "\"}");
+            return;
 
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+            throw e;
         }
+
+        chain.doFilter(request, response);
+    }
+
+    private String safe(String s) {
+        if (s == null) return "";
+        return s.replace("\"", "\\\"");
     }
 }

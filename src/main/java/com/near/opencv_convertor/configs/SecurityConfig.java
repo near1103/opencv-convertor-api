@@ -35,7 +35,7 @@ public class SecurityConfig {
                         })
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                        .requestMatchers("/api/auth/login", "/api/auth/register", "/api/excel/execute").permitAll()
                         .requestMatchers("/api/formats").permitAll()
                         .anyRequest().authenticated()
                 )
