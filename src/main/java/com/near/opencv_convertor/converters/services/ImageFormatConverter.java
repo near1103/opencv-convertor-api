@@ -26,24 +26,64 @@ public class ImageFormatConverter {
 
         throw new UnsupportedOperationException("Conversion from " + inputExt + " to " + outputFormat.getExtension() + " not supported in this class");
     }
-
     private File convertToWebp(File inputFile) throws IOException, InterruptedException {
         File outputFile = createTempOutputFile(TEMP_PREFIX_CONVERTED, "webp");
-        ProcessBuilder pb = new ProcessBuilder("cwebp", inputFile.getAbsolutePath(), "-o", outputFile.getAbsolutePath());
-        Process process = pb.start();
-        if (process.waitFor() != 0) {
-            throw new IOException("Error calling cwebp");
-        }
-        return outputFile;
+
+        ProcessBuilder pb = new ProcessBuilder(
+                "cwebp",
+                inputFile.getAbsolutePath(),
+                "-o",
+                outputFile.getAbsolutePath()
+        );
+
+        return runConversionProcess(pb, outputFile, "cwebp");
     }
 
-    private File convertFromWebp(File inputFile, SupportedImageFormat targetFormat) throws IOException, InterruptedException {
-        File outputFile = createTempOutputFile(TEMP_PREFIX_CONVERTED, targetFormat.getExtension());
-        ProcessBuilder pb = new ProcessBuilder("dwebp", inputFile.getAbsolutePath(), "-o", outputFile.getAbsolutePath());
-        Process process = pb.start();
-        if (process.waitFor() != 0) {
-            throw new IOException("Error calling dwebp");
+    private File convertFromWebp(File inputFile, SupportedImageFormat targetFormat)
+            throws IOException, InterruptedException {
+
+        if (targetFormat == SupportedImageFormat.WEBP) {
+            return inputFile;
         }
+
+        File outputFile = createTempOutputFile(TEMP_PREFIX_CONVERTED, targetFormat.getExtension());
+
+        ProcessBuilder pb = new ProcessBuilder(
+                "dwebp",
+                inputFile.getAbsolutePath(),
+                "-o",
+                outputFile.getAbsolutePath()
+        );
+
+        return runConversionProcess(pb, outputFile, "dwebp");
+    }
+
+    private File runConversionProcess(ProcessBuilder pb, File outputFile, String command)
+            throws IOException, InterruptedException {
+
+        Process process = pb.start();
+
+        String stdout = new String(process.getInputStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+        String stderr = new String(process.getErrorStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+
+        int exitCode = process.waitFor();
+
+        if (exitCode != 0) {
+            throw new IOException(
+                    "Error calling " + command +
+                            ". Exit code: " + exitCode +
+                            ". stdout: " + stdout +
+                            ". stderr: " + stderr
+            );
+        }
+
+        if (!outputFile.exists() || outputFile.length() == 0) {
+            throw new IOException(
+                    command + " finished successfully, but output file was not created or is empty: "
+                            + outputFile.getAbsolutePath()
+            );
+        }
+
         return outputFile;
     }
 
