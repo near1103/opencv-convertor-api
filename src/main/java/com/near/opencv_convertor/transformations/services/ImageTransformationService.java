@@ -1,7 +1,9 @@
 package com.near.opencv_convertor.transformations.services;
 
 import com.near.opencv_convertor.dto.ResponseImage;
+import com.near.opencv_convertor.gifprocessing.GifProcessingService;
 import com.near.opencv_convertor.transformations.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -19,14 +21,37 @@ import java.util.Map;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ImageTransformationService {
+
+    private final GifProcessingService gifProcessingService;
 
     public ResponseImage applyTransformation(MultipartFile file, String transformationTypeRaw, Map<String, String> params) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("Image file is empty");
         }
 
-        TransformationType transformationType = TransformationType.valueOf(transformationTypeRaw.toUpperCase(Locale.ROOT));
+        TransformationType transformationType =
+                TransformationType.valueOf(transformationTypeRaw.toUpperCase(Locale.ROOT));
+
+        ImageTransformation transformation = TransformationFactory.create(transformationType);
+        TransformationParams transformationParams =
+                TransformationParamsFactory.create(transformationType, params);
+
+        String extension = resolveExtension(file.getOriginalFilename());
+        String outputFilename = buildOutputFilename(
+                file.getOriginalFilename(),
+                transformationType,
+                extension
+        );
+
+        if ("gif".equalsIgnoreCase(extension)) {
+            return gifProcessingService.processGif(
+                    file,
+                    frame -> transformation.apply(frame, transformationParams),
+                    outputFilename
+            );
+        }
 
         Mat source = null;
         Mat result = null;
@@ -34,15 +59,10 @@ public class ImageTransformationService {
         try {
             source = readImage(file);
 
-            ImageTransformation transformation = TransformationFactory.create(transformationType);
-            TransformationParams transformationParams = TransformationParamsFactory.create(transformationType, params);
-
             result = transformation.apply(source, transformationParams);
 
-            String extension = resolveExtension(file.getOriginalFilename());
             byte[] resultBytes = encodeImage(result, extension);
 
-            String outputFilename = buildOutputFilename(file.getOriginalFilename(), transformationType, extension);
             MediaType mediaType = MediaTypeFactory.getMediaType(outputFilename)
                     .orElse(MediaType.APPLICATION_OCTET_STREAM);
 
@@ -106,6 +126,7 @@ public class ImageTransformationService {
             case "bmp" -> "bmp";
             case "webp" -> "webp";
             case "tif", "tiff" -> "tiff";
+            case "gif" -> "gif";
             default -> "png";
         };
     }

@@ -96,6 +96,26 @@ public class FilterParamsFactory {
                 aap.setInvert(Boolean.parseBoolean(params.getOrDefault("invert", "false")));
                 yield aap;
             }
+            case OBAMIFY -> {
+                ObamifyParams op = new ObamifyParams();
+
+                String resolutionRaw = params.get("resolution");
+                if (resolutionRaw != null && !resolutionRaw.isBlank()) {
+                    op.setResolution(Integer.parseInt(resolutionRaw));
+                }
+
+                String proximityImportanceRaw = params.get("proximityImportance");
+                if (proximityImportanceRaw != null && !proximityImportanceRaw.isBlank()) {
+                    op.setProximityImportance(Integer.parseInt(proximityImportanceRaw));
+                }
+
+                String presetRaw = params.get("preset");
+                if (presetRaw != null && !presetRaw.isBlank()) {
+                    op.setPreset(presetRaw.trim());
+                }
+
+                yield op;
+            }
             case GRAYSCALE, NEGATIVE -> new EmptyParams();
 
         };

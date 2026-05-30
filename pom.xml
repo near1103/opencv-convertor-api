@@ -122,12 +122,19 @@
 			<version>5.5.13.3</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.bytedeco/opencv -->
-		<dependency>
-			<groupId>org.bytedeco</groupId>
-			<artifactId>opencv</artifactId>
-			<version>4.10.0-1.5.11</version>
-		</dependency>
+			<!-- OpenCV + native binaries for Windows/Linux/macOS -->
+			<dependency>
+				<groupId>org.bytedeco</groupId>
+				<artifactId>opencv-platform</artifactId>
+				<version>4.10.0-1.5.11</version>
+			</dependency>
+
+			<!-- Fix for missing jniopenblas_nolapack -->
+			<dependency>
+				<groupId>org.bytedeco</groupId>
+				<artifactId>openblas-platform</artifactId>
+				<version>0.3.28-1.5.11</version>
+			</dependency>
 
 		<dependency>
 			<groupId>javax.servlet</groupId>

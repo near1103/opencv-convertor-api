@@ -15,5 +15,6 @@ public enum FilterType {
     CONTRAST,
     CHROMATIC_ABERRATION,
     DATA_MOSH,
-    ASCII_ART
+    ASCII_ART,
+    OBAMIFY
 }
